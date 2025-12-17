@@ -2,362 +2,441 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>躲避按钮问答游戏</title>
-    <link rel="manifest" href="manifest.json">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>麻将1v3大作战</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
             font-family: 'Arial', sans-serif;
         }
         
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
-            touch-action: manipulation;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
         }
         
         .container {
-            background: white;
+            background-color: white;
             border-radius: 20px;
-            padding: 25px;
-            width: 100%;
-            max-width: 500px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            width: 90%;
+            max-width: 700px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header {
+            margin-bottom: 20px;
         }
         
         h1 {
             color: #333;
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-            text-align: center;
+            margin-bottom: 5px;
+            font-size: 2.2rem;
         }
         
         .subtitle {
             color: #666;
-            text-align: center;
-            margin-bottom: 25px;
-            font-size: 0.95rem;
-        }
-        
-        .question-box {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 25px;
-            margin: 25px 0;
-            min-height: 150px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .question {
-            font-size: 1.5rem;
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-        
-        .question-counter {
-            color: #7f8c8d;
             font-size: 1rem;
         }
         
         .game-area {
             position: relative;
-            height: 300px;
-            background: #f0f2f5;
+            height: 400px;
+            background-color: #f8f9fa;
             border-radius: 15px;
-            margin: 25px 0;
-            overflow: hidden;
+            margin: 20px 0;
             border: 2px dashed #ddd;
+            overflow: hidden;
+        }
+        
+        .question-container {
+            padding: 25px;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .question {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 10px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .question-number {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+        
+        .buttons-area {
+            position: relative;
+            height: 200px;
+            width: 100%;
         }
         
         .btn {
             position: absolute;
-            padding: 20px 35px;
-            font-size: 1.4rem;
+            padding: 15px 35px;
+            font-size: 1.3rem;
             border: none;
             border-radius: 50px;
-            font-weight: bold;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: all 0.2s;
-            min-width: 140px;
-            text-align: center;
             cursor: pointer;
-            z-index: 10;
-        }
-        
-        .btn:active {
-            transform: scale(0.95);
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
         }
         
         #yes-btn {
             background: linear-gradient(to right, #00b09b, #96c93d);
             color: white;
-            top: 40px;
             left: 50%;
             transform: translateX(-50%);
+            top: 50px;
+            z-index: 10;
         }
         
         #no-btn {
             background: linear-gradient(to right, #ff416c, #ff4b2b);
             color: white;
-            top: 130px;
+            top: 120px;
             left: 50%;
             transform: translateX(-50%);
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        
+        #yes-btn:hover {
+            background: linear-gradient(to right, #009688, #8bc34a);
+        }
+        
+        #no-btn:hover {
+            background: linear-gradient(to right, #e53935, #d32f2f);
         }
         
         .stats {
             display: flex;
             justify-content: space-around;
-            margin: 25px 0;
+            margin-top: 20px;
             padding: 15px;
-            background: #f8f9fa;
-            border-radius: 15px;
+            background-color: #f0f2f5;
+            border-radius: 10px;
         }
         
-        .stat {
+        .stat-item {
             text-align: center;
         }
         
-        .stat-number {
-            font-size: 2rem;
-            color: #667eea;
+        .stat-value {
+            font-size: 1.8rem;
             font-weight: bold;
+            color: #667eea;
         }
         
         .stat-label {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: #666;
-            margin-top: 5px;
         }
         
         .instructions {
-            background: #e8f4fc;
+            background-color: #e8f4fc;
             padding: 15px;
             border-radius: 10px;
             margin-top: 20px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: #555;
             border-left: 4px solid #2196f3;
         }
         
-        @media (max-width: 480px) {
+        .completion-message {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            color: #2c3e50;
+            font-weight: bold;
+            min-height: 50px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .completion-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        @media (max-width: 600px) {
             .container {
                 padding: 20px;
             }
             
             h1 {
-                font-size: 1.5rem;
+                font-size: 1.8rem;
             }
             
             .question {
-                font-size: 1.3rem;
+                font-size: 1.5rem;
             }
             
             .btn {
-                padding: 18px 30px;
-                font-size: 1.2rem;
-                min-width: 120px;
+                padding: 12px 25px;
+                font-size: 1.1rem;
             }
-            
-            .game-area {
-                height: 250px;
-            }
-        }
-        
-        /* 防止长按菜单 */
-        .btn {
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>躲避按钮问答游戏</h1>
-        <p class="subtitle">点击"是"继续，尝试点击"否"</p>
-        
-        <div class="question-box">
-            <div class="question" id="question">你喜欢编程吗？</div>
-            <div class="question-counter" id="counter">问题 1/4</div>
+        <div class="header">
+            <h1>麻将1v3大作战</h1>
+            <p class="subtitle"></p>
         </div>
         
-        <div class="game-area" id="game-area">
-            <button class="btn" id="yes-btn">是</button>
-            <button class="btn" id="no-btn">否</button>
+        <div class="game-area">
+            <div class="question-container">
+                <div class="question" id="question">问题加载中...</div>
+                <div class="question-number" id="question-number">问题 1/4</div>
+            </div>
+            
+            <div class="buttons-area" id="buttons-area">
+                <button class="btn" id="yes-btn">是</button>
+                <button class="btn" id="no-btn">否</button>
+            </div>
         </div>
         
         <div class="stats">
-            <div class="stat">
-                <div class="stat-number" id="current">1</div>
-                <div class="stat-label">当前问题</div>
+            <div class="stat-item">
+                <div class="stat-value" id="current-question">1</div>
+                <div class="stat-label"></div>
             </div>
-            <div class="stat">
-                <div class="stat-number" id="moves">0</div>
-                <div class="stat-label">移动次数</div>
+            <div class="stat-item">
+                <div class="stat-value" id="no-move-count">0</div>
+                <div class="stat-label"></div>
             </div>
-            <div class="stat">
-                <div class="stat-number" id="clicks">0</div>
-                <div class="stat-label">点击次数</div>
+            <div class="stat-item">
+                <div class="stat-value" id="yes-click-count">0</div>
+                <div class="stat-label"></div>
             </div>
         </div>
         
+        <div class="completion-message" id="completion-message"></div>
+        
         <div class="instructions">
-            <strong>玩法：</strong><br>
-            1. 点击"是"切换到下一题<br>
-            2. 尝试点击"否"按钮，它会随机移动<br>
-            3. 回答完4个问题游戏结束
+            <p><strong></strong></p>
+            <ul style="text-align: left; padding-left: 20px; margin-top: 5px;">
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
         </div>
     </div>
 
     <script>
-        // 手机触摸优化版本
-        const yesBtn = document.getElementById('yes-btn');
-        const noBtn = document.getElementById('no-btn');
-        const question = document.getElementById('question');
-        const counter = document.getElementById('counter');
-        const currentSpan = document.getElementById('current');
-        const movesSpan = document.getElementById('moves');
-        const clicksSpan = document.getElementById('clicks');
-        const gameArea = document.getElementById('game-area');
-        
-        const questions = [
-            "你喜欢编程吗？",
-            "你觉得这个游戏有趣吗？",
-            "你今天过得愉快吗？",
-            "你想继续学习编程吗？"
-        ];
-        
-        let currentIndex = 0;
-        let moves = 0;
-        let clicks = 0;
-        let gameOver = false;
-        
-        // 更新显示
-        function updateDisplay() {
-            question.textContent = questions[currentIndex];
-            counter.textContent = `问题 ${currentIndex + 1}/4`;
-            currentSpan.textContent = currentIndex + 1;
-        }
-        
-        // 随机移动"否"按钮
-        function moveNoButton() {
-            const areaRect = gameArea.getBoundingClientRect();
-            const btnRect = noBtn.getBoundingClientRect();
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取元素
+            const yesBtn = document.getElementById('yes-btn');
+            const noBtn = document.getElementById('no-btn');
+            const questionElement = document.getElementById('question');
+            const questionNumberElement = document.getElementById('question-number');
+            const currentQuestionElement = document.getElementById('current-question');
+            const noMoveCountElement = document.getElementById('no-move-count');
+            const yesClickCountElement = document.getElementById('yes-click-count');
+            const completionMessageElement = document.getElementById('completion-message');
+            const buttonsArea = document.getElementById('buttons-area');
             
-            // 计算可移动区域
-            const maxX = areaRect.width - btnRect.width;
-            const maxY = areaRect.height - btnRect.height;
+            // 游戏状态变量
+            let currentQuestionIndex = 0;
+            let noMoveCount = 0;
+            let yesClickCount = 0;
+            let gameCompleted = false;
             
-            // 生成随机位置
-            const randomX = Math.random() * maxX;
-            const randomY = Math.random() * maxY;
+            // 定义4个问题
+            const questions = [
+                "你要下班了吗？",
+                "今天上班累吗？",
+                "下班了有时间吗？",
+                "是否接受一场酣畅淋漓的排列组合游戏？"
+            ];
             
-            // 应用新位置
-            noBtn.style.left = `${randomX}px`;
-            noBtn.style.top = `${randomY}px`;
+            // 游戏完成时的消息
+            const completionMessages = [
+                "今晚19点不见不散！",
+                "今晚19点不见不散！",
+                "今晚19点不见不散！",
+                "今晚19点不见不散！"
+            ];
             
-            // 随机颜色
-            const hue = Math.random() * 360;
-            noBtn.style.background = `linear-gradient(to right, hsl(${hue}, 80%, 60%), hsl(${hue}, 80%, 50%))`;
-        }
-        
-        // "是"按钮点击
-        yesBtn.addEventListener('click', function() {
-            if (gameOver) {
-                location.reload();
-                return;
-            }
+            // 初始化显示第一个问题
+            updateQuestionDisplay();
             
-            clicks++;
-            clicksSpan.textContent = clicks;
-            
-            if (currentIndex < questions.length - 1) {
-                currentIndex++;
-                updateDisplay();
-            } else {
-                gameOver = true;
-                question.textContent = "🎉 游戏完成！";
-                yesBtn.textContent = "重新开始";
-                noBtn.style.display = 'none';
-            }
-            
-            // 移动否按钮
-            moveNoButton();
-            moves++;
-            movesSpan.textContent = moves;
-        });
-        
-        // "否"按钮触摸事件（移动端）
-        let touchTimer;
-        noBtn.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            
-            // 快速连续移动
-            clearInterval(touchTimer);
-            touchTimer = setInterval(() => {
-                if (!gameOver) {
+            // "是"按钮点击事件
+            yesBtn.addEventListener('click', function() {
+                if (gameCompleted) return;
+                
+                yesClickCount++;
+                yesClickCountElement.textContent = yesClickCount;
+                
+                // 切换到下一个问题
+                currentQuestionIndex++;
+                
+                if (currentQuestionIndex < questions.length) {
+                    // 显示下一个问题
+                    updateQuestionDisplay();
+                    
+                    // 移动"否"按钮到随机位置
                     moveNoButton();
-                    moves++;
-                    movesSpan.textContent = moves;
+                    noMoveCount++;
+                    noMoveCountElement.textContent = noMoveCount;
+                } else {
+                    // 所有问题已回答完毕
+                    completeGame();
                 }
-            }, 200);
-        });
-        
-        noBtn.addEventListener('touchend', function() {
-            clearInterval(touchTimer);
-        });
-        
-        // "否"按钮鼠标事件（桌面端）
-        let mouseTimer;
-        noBtn.addEventListener('mouseover', function() {
-            if (gameOver) return;
+            });
             
-            clearInterval(mouseTimer);
-            mouseTimer = setInterval(() => {
-                moveNoButton();
-                moves++;
-                movesSpan.textContent = moves;
-            }, 200);
-        });
-        
-        noBtn.addEventListener('mouseout', function() {
-            clearInterval(mouseTimer);
-        });
-        
-        // 点击也移动
-        noBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            if (!gameOver) {
-                moveNoButton();
-                moves++;
-                movesSpan.textContent = moves;
-            }
-        });
-        
-        // 初始化
-        updateDisplay();
-        moveNoButton();
-        
-        // 添加到主屏幕提示
-        if ('standalone' in navigator || window.matchMedia('(display-mode: standalone)').matches) {
-            console.log("已添加到主屏幕");
+            // "否"按钮鼠标悬停事件
+           // "否"按钮鼠标悬停事件 - 极速随机移动
+let hoverInterval;
+let isHovering = false;
+
+noBtn.addEventListener('mouseover', function() {
+    if (gameCompleted || isHovering) return;
+    
+    isHovering = true;
+    
+    // 鼠标悬停时快速连续移动
+    hoverInterval = setInterval(() => {
+        if (!gameCompleted) {
+            moveNoButton();
+            noMoveCount++;
+            noMoveCountElement.textContent = noMoveCount;
         }
+    }, 150); // 每150毫秒移动一次
+});
+
+noBtn.addEventListener('mouseout', function() {
+    isHovering = false;
+    clearInterval(hoverInterval);
+});
+            
+            // "否"按钮点击事件
+            noBtn.addEventListener('click', function(e) {
+                if (gameCompleted) return;
+                
+                e.preventDefault();
+                moveNoButton();
+                noMoveCount++;
+                noMoveCountElement.textContent = noMoveCount;
+                
+                return false;
+            });
+            
+            // 更新问题显示
+            function updateQuestionDisplay() {
+                questionElement.textContent = questions[currentQuestionIndex];
+                questionNumberElement.textContent = `问题 ${currentQuestionIndex + 1}/${questions.length}`;
+                currentQuestionElement.textContent = currentQuestionIndex + 1;
+            }
+            
+            // 移动"否"按钮到随机位置
+            function moveNoButton() {
+                if (gameCompleted) return;
+                
+                const areaRect = buttonsArea.getBoundingClientRect();
+                const btnRect = noBtn.getBoundingClientRect();
+                
+                // 计算可移动的区域（减去按钮自身的尺寸）
+                const maxX = areaRect.width - btnRect.width;
+                const maxY = areaRect.height - btnRect.height;
+                
+                // 确保最小范围
+                if (maxX <= 0 || maxY <= 0) return;
+                
+                // 生成随机位置
+                const randomX = Math.floor(Math.random() * maxX);
+                const randomY = Math.floor(Math.random() * maxY);
+                
+                // 确保不会与"是"按钮重叠
+                const yesBtnRect = yesBtn.getBoundingClientRect();
+                let attempts = 0;
+                let newX = randomX;
+                let newY = randomY;
+                
+                // 尝试10次找到一个不重叠的位置
+                while (attempts < 10) {
+                    // 检查是否与"是"按钮重叠
+                    const overlap = checkOverlap(
+                        newX, newY, btnRect.width, btnRect.height,
+                        50, 50, yesBtnRect.width, yesBtnRect.height
+                    );
+                    
+                    if (!overlap) break;
+                    
+                    newX = Math.floor(Math.random() * maxX);
+                    newY = Math.floor(Math.random() * maxY);
+                    attempts++;
+                }
+                
+                // 应用新位置
+                noBtn.style.left = `${newX}px`;
+                noBtn.style.top = `${newY}px`;
+                
+                // 随机改变按钮颜色，增加趣味性
+                const hue = Math.floor(Math.random() * 360);
+                noBtn.style.background = `linear-gradient(to right, hsl(${hue}, 80%, 55%), hsl(${hue}, 80%, 45%))`;
+            }
+            
+            // 检查两个元素是否重叠的辅助函数
+            function checkOverlap(x1, y1, w1, h1, x2, y2, w2, h2) {
+                return x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2;
+            }
+            
+            // 游戏完成
+            function completeGame() {
+                gameCompleted = true;
+                
+                // 随机选择一个完成消息
+                const randomMessageIndex = Math.floor(Math.random() * completionMessages.length);
+                completionMessageElement.textContent = completionMessages[randomMessageIndex];
+                completionMessageElement.classList.add('show');
+                
+                // 更新问题显示
+                questionElement.textContent = "今晚19点不见不散！";
+                questionNumberElement.textContent = "";
+                
+                // 改变按钮状态
+                yesBtn.textContent = "重新开始";
+                yesBtn.style.background = "linear-gradient(to right, #2196f3, #1976d2)";
+                
+                // 隐藏"否"按钮
+                noBtn.style.display = "none";
+                
+                // 添加重新开始功能
+                yesBtn.onclick = function() {
+                    location.reload();
+                };
+            }
+            
+            // 初始随机移动"否"按钮
+            moveNoButton();
+        });
     </script>
 </body>
 </html>
